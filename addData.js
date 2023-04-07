@@ -7,18 +7,34 @@ const stochRsiMonthlyModel = require("./models/stochRsiMonthlyModel");
 const MacdModel = require("./models/macdModels");
 const MacdMonthlyModel = require("./models/macdMonthlyModel");
 
-exports.rsiDBcreateWeekly = async (symbol, rsi, date, interval) => {
+exports.rsiDBcreateWeekly = async (
+  symbol,
+  rsi,
+  date,
+  interval,
+  pdate,
+  prsi
+) => {
   try {
     const final = await RsiModel.create({
       symbol,
       data: rsi,
       date,
       interval,
+      previousdate: pdate,
+      previousrsi: prsi,
     });
   } catch (err) {}
 };
 
-exports.rsiDBupdateWeekly = async (symbol, rsi, date, interval) => {
+exports.rsiDBupdateWeekly = async (
+  symbol,
+  rsi,
+  date,
+  interval,
+  pdate,
+  prsi
+) => {
   try {
     const final = await RsiModel.updateOne(
       { symbol },
@@ -26,6 +42,8 @@ exports.rsiDBupdateWeekly = async (symbol, rsi, date, interval) => {
         data: rsi,
         date,
         interval,
+        previousdate: pdate,
+        previousrsi: prsi,
       }
     );
   } catch (err) {}
@@ -55,7 +73,16 @@ exports.rsiDBupdateMonthly = async (symbol, rsi, date, interval) => {
   } catch (err) {}
 };
 
-exports.stochDBcreate = async (symbol, slowk, slowd, date, interval) => {
+exports.stochDBcreate = async (
+  symbol,
+  slowk,
+  slowd,
+  date,
+  interval,
+  pk,
+  pd,
+  pdate
+) => {
   try {
     const final = await StochModel.create({
       symbol,
@@ -63,11 +90,23 @@ exports.stochDBcreate = async (symbol, slowk, slowd, date, interval) => {
       slowd,
       date,
       interval,
+      previousk: pk,
+      previousd: pd,
+      previousdate: pdate,
     });
   } catch (err) {}
 };
 
-exports.stochDBupdate = async (symbol, slowk, slowd, date, interval) => {
+exports.stochDBupdate = async (
+  symbol,
+  slowk,
+  slowd,
+  date,
+  interval,
+  pk,
+  pd,
+  pdate
+) => {
   try {
     const final = await StochModel.updateOne(
       { symbol },
@@ -76,6 +115,9 @@ exports.stochDBupdate = async (symbol, slowk, slowd, date, interval) => {
         slowd,
         date,
         interval,
+        previousk: pk,
+        previousd: pd,
+        previousdate: pdate,
       }
     );
   } catch (err) {}
@@ -107,19 +149,40 @@ exports.stochDBupdateMonthly = async (symbol, slowk, slowd, date, interval) => {
   } catch (err) {}
 };
 
-exports.stochRsiDBcreate = async (symbol, fastk, fastd, date, interval) => {
+exports.stochRsiDBcreate = async (
+  symbol,
+  fastk,
+  fastd,
+  date,
+  interval,
+  pfk,
+  pfd,
+  pdate
+) => {
   try {
     const final = await StochRsiModel.create({
       symbol,
       fastk,
       fastd,
       date,
+      previousdate: pdate,
+      previousfastk: pfk,
+      previousfastd: pfd,
       interval,
     });
   } catch (err) {}
 };
 
-exports.stochRsiDBupdate = async (symbol, fastk, fastd, date, interval) => {
+exports.stochRsiDBupdate = async (
+  symbol,
+  fastk,
+  fastd,
+  date,
+  interval,
+  pfk,
+  pfd,
+  pdate
+) => {
   try {
     const final = await StochRsiModel.updateOne(
       {
@@ -129,6 +192,9 @@ exports.stochRsiDBupdate = async (symbol, fastk, fastd, date, interval) => {
         fastk,
         fastd,
         date,
+        previousdate: pdate,
+        previousfastk: pfk,
+        previousfastd: pfd,
         interval,
       }
     );
@@ -175,7 +241,16 @@ exports.stochRsiDBupdateMonthly = async (
   } catch (err) {}
 };
 
-exports.macdDBcreate = async (symbol, macd, signal, date, interval) => {
+exports.macdDBcreate = async (
+  symbol,
+  macd,
+  signal,
+  date,
+  interval,
+  pd,
+  pm,
+  ps
+) => {
   try {
     const final = await MacdModel.create({
       symbol,
@@ -183,11 +258,23 @@ exports.macdDBcreate = async (symbol, macd, signal, date, interval) => {
       signal,
       date,
       interval,
+      previousdate: pd,
+      previousmacd: pm,
+      previoussignal: ps,
     });
   } catch (err) {}
 };
 
-exports.macdDBupdate = async (symbol, macd, signal, date, interval) => {
+exports.macdDBupdate = async (
+  symbol,
+  macd,
+  signal,
+  date,
+  interval,
+  pd,
+  pm,
+  ps
+) => {
   try {
     const final = await MacdModel.updateOne(
       {
@@ -198,6 +285,9 @@ exports.macdDBupdate = async (symbol, macd, signal, date, interval) => {
         signal,
         date,
         interval,
+        previousdate: pd,
+        previousmacd: pm,
+        previoussignal: ps,
       }
     );
   } catch (err) {}

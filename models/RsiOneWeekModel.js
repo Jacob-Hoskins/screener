@@ -15,6 +15,12 @@ const RsiOneWeekSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  previousdate: {
+    type: String,
+  },
+  previousrsi: {
+    type: String,
+  },
 });
 
 const Rsi = mongoose.model("Rsi", RsiOneWeekSchema);

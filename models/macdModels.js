@@ -15,6 +15,15 @@ const MacdSchema = new mongoose.Schema({
   signal: {
     type: String,
   },
+  previousdate: {
+    type: String,
+  },
+  previousmacd: {
+    type: String,
+  },
+  previoussignal: {
+    type: String,
+  },
   interval: {
     type: String,
     required: true,

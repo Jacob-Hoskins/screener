@@ -19,6 +19,15 @@ const StochSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  previousdate: {
+    type: String,
+  },
+  previousk: {
+    type: String,
+  },
+  previousd: {
+    type: String,
+  },
 });
 
 const Stoch = mongoose.model("Stoch", StochSchema);
