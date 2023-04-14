@@ -36,3 +36,16 @@ exports.NoDataCheck = (data) => {
   }
   return output;
 };
+
+exports.checkRateLimit = (num) => {
+  //if limit is a whole number, then rate limit hit, setTimeout to wait for RPM reset
+  let limit = num / 55;
+  if (Number.isInteger(limit) & (num != 0)) {
+    setTimeout(() => {
+      console.log("In timeout");
+    }, 1000);
+    return true;
+  } else {
+    return false;
+  }
+};
