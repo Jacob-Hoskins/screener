@@ -22,15 +22,18 @@ exports.startingPointEquities = async () => {
 
     //console.log(symbol);
     await sleep(1500);
+
     request.stockRSI(symbol, "1week", "stock");
     request.StockStoch(symbol, "1week", "stock");
-    //request.StockStochRsi(symbol, "1week", "stock");
+    request.StockStochRsi(symbol, "1week", "stock");
     request.StockMacd(symbol, "1week", "stock");
 
-    //request.stockRSI(symbol, "1month", "stock");
-    //request.StockStoch(symbol, "1month");
-    //request.StockStochRsi(symbol, "1month");
-    //request.StockMacd(symbol, "1month");
+    await sleep(1500);
+
+    request.stockRSI(symbol, "1month", "stock");
+    request.StockStoch(symbol, "1month");
+    request.StockStochRsi(symbol, "1month");
+    request.StockMacd(symbol, "1month");
   }
   //console.log("fails", failedSearches.failedList);
   // console.log("Out of for loop in equities");
@@ -39,22 +42,31 @@ exports.startingPointEquities = async () => {
 exports.startingPointCryptos = async () => {
   //request.allCryptos();
   // 3822
+  console.log("In Cryptos");
   let all_cryptos = await Cryptos.find();
   for (let x = 0; x <= all_cryptos.length; x++) {
     let symbol = all_cryptos[x].symbol;
-    request.stockRSI(symbol, "1week", "crypto");
-    //request.StockStoch(symbol, "1week", "crypto");
-    //request.StockStochRsi(symbol, "1week", "crypto");
-    //request.StockMacd(symbol, "1week", "crypto");
 
-    //TODO: One month crypto models
-    // request.stockRSI(symbol, "1month", "crypto");
+    await sleep(1500);
+
+    request.stockRSI(symbol, "1week", "crypto");
+    request.StockStoch(symbol, "1week", "crypto");
+    request.StockStochRsi(symbol, "1week", "crypto");
+    request.StockMacd(symbol, "1week", "crypto");
+
+    await sleep(1500);
+
+    request.stockRSI(symbol, "1month", "crypto");
+    request.StockStoch(symbol, "1month", "crypto");
+    request.StockStochRsi(symbol, "1month", "crypto");
+    request.StockMacd(symbol, "1month", "crypto");
   }
 };
 
 exports.failedSearchResults = async () => {
   let failed = await failedCryptoModel.find();
   let failed_length = failed.length - 1;
+  console.log("In Failed List");
   //console.log(failed.length);
   while (failed_length != 0) {
     request.failedRsiSearch(
