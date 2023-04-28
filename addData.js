@@ -1,21 +1,6 @@
+const crypto = require("./models/allCryptosModel");
 const CryptoModel = require("./models/allCryptosModel");
-const RsiModel = require("./models/RsiOneWeekModel");
-const CryptoRsiModel = require("./models/cryptoRsiWeekly");
-const RsiMonthlyModel = require("./models/rsiOneMonthModel");
-const CryptoRsiMonthlyModel = require("./models/cryptoRsiMonthly");
-const StochModel = require("./models/StochModel");
-const CryptoSochModel = require("./models/cryptoStochModel");
-const StochMonthlyModel = require("./models/stochMonthlyModel");
-const CryptoStochMonthlyModel = require("./models/cryptoStochMonthlyModel");
-const StochRsiModel = require("./models/StochRsiModel");
-const CryptoStochRsiModel = require("./models/cryptoStochRsiWeekly");
-const stochRsiMonthlyModel = require("./models/stochRsiMonthlyModel");
-const CryptoStochRsiMonthlyModel = require("./models/cryptoStochRsiMonthly");
-const MacdModel = require("./models/macdModels");
-const CryptoMacdModel = require("./models/CryptoMacdWeeklyModel");
-const MacdMonthlyModel = require("./models/macdMonthlyModel");
-const CryptoMacdMonthlyModel = require("./models/cryptoMacdMonthlyModel");
-const failedModel = require("./models/failedSearch");
+const symbolModel = require("./models/symbolsModel");
 
 exports.addCryptos = async (sym, exc, base, quote) => {
   try {
@@ -30,136 +15,83 @@ exports.addCryptos = async (sym, exc, base, quote) => {
   }
 };
 
-exports.rsiDBcreateWeekly = async (
+exports.rsiSymUpdate = async (symbol, rsi, date, pdate, prsi, type) => {
+  if (type === "stock") {
+    try {
+      const final = await symbolModel.updateOne(
+        { symbol },
+        {
+          weeklyRsi: [
+            {
+              rsiOutput: rsi,
+              rsiDate: date,
+            },
+          ],
+          biweeklyRsi: [
+            {
+              rsiOutput: prsi,
+              rsiDate: pdate,
+            },
+          ],
+        }
+      );
+    } catch (err) {}
+  } else if (type === "crypto") {
+    try {
+      const final = await CryptoModel.updateOne(
+        { symbol },
+        {
+          weeklyRsi: [
+            {
+              rsiOutput: rsi,
+              rsiDate: date,
+            },
+          ],
+          biweeklyRsi: [
+            {
+              rsiOutput: prsi,
+              rsiDate: pdate,
+            },
+          ],
+        }
+      );
+    } catch (err) {}
+  }
+};
+
+exports.rsiSymMonthlyUpdate = async (symbol, rsi, date, type) => {
+  if (type === "stock") {
+    try {
+      const final = await symbolModel.updateOne(
+        { symbol },
+        {
+          rsiMonthly: {
+            rsiOutput: rsi,
+            date: date,
+          },
+        }
+      );
+    } catch (err) {}
+  } else if (type === "crypto") {
+    try {
+      const final = await CryptoModel.updateOne(
+        { symbol },
+        {
+          rsiMonthly: {
+            rsiOutput: rsi,
+            date: date,
+          },
+        }
+      );
+    } catch (err) {}
+  }
+};
+
+exports.stochSymWeeklyUpdate = async (
   symbol,
-  rsi,
+  stoch_k,
+  stoch_d,
   date,
-  interval,
-  pdate,
-  prsi,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await RsiModel.create({
-        symbol,
-        data: rsi,
-        date,
-        interval,
-        previousdate: pdate,
-        previousrsi: prsi,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoRsiModel.create({
-        symbol,
-        data: rsi,
-        date,
-        interval,
-        previousdate: pdate,
-        previousrsi: prsi,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.rsiDBupdateWeekly = async (
-  symbol,
-  rsi,
-  date,
-  interval,
-  pdate,
-  prsi,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await RsiModel.updateOne(
-        { symbol },
-        {
-          data: rsi,
-          date,
-          interval,
-          previousdate: pdate,
-          previousrsi: prsi,
-        }
-      );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoRsiModel.updateOne(
-        { symbol },
-        {
-          data: rsi,
-          date,
-          interval,
-          previousdate: pdate,
-          previousrsi: prsi,
-        }
-      );
-    } catch (err) {}
-  }
-};
-
-exports.rsiDBcreateMonthly = async (symbol, rsi, date, interval, type) => {
-  if (type === "stock") {
-    try {
-      const final = await RsiMonthlyModel.create({
-        symbol,
-        data: rsi,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoRsiMonthlyModel.create({
-        symbol,
-        data: rsi,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.rsiDBupdateMonthly = async (symbol, rsi, date, interval, type) => {
-  if (type === "stock") {
-    try {
-      const final = await RsiMonthlyModel.updateOne(
-        { symbol },
-        {
-          data: rsi,
-          date,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoRsiMonthlyModel.updateOne(
-        { symbol },
-        {
-          data: rsi,
-          date,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-};
-
-exports.stochDBcreate = async (
-  symbol,
-  slowk,
-  slowd,
-  date,
-  interval,
   pk,
   pd,
   pdate,
@@ -167,458 +99,240 @@ exports.stochDBcreate = async (
 ) => {
   if (type === "stock") {
     try {
-      const final = await StochModel.create({
-        symbol,
-        slowk,
-        slowd,
-        date,
-        interval,
-        previousk: pk,
-        previousd: pd,
-        previousdate: pdate,
-      });
+      const final = await symbolModel.updateOne(
+        { symbol },
+        {
+          stochWeekly: [
+            {
+              stoch_k,
+              stoch_d,
+              date,
+            },
+          ],
+          biweeklyStoch: {
+            stoch_k: pk,
+            stoch_d: pd,
+            date: pdate,
+          },
+        }
+      );
     } catch (err) {}
-  }
-  if (type === "crypto") {
+  } else if (type === "crypto") {
     try {
-      const final = await CryptoSochModel.create({
-        symbol,
-        slowk,
-        slowd,
-        date,
-        interval,
-        previousk: pk,
-        previousd: pd,
-        previousdate: pdate,
-      });
+      const final = await CryptoModel.updateOne(
+        { symbol },
+        {
+          stochWeekly: [
+            {
+              stoch_k,
+              stoch_d,
+              date,
+            },
+          ],
+          biweeklyStoch: {
+            stoch_k: pk,
+            stoch_d: pd,
+            date: pdate,
+          },
+        }
+      );
     } catch (err) {}
   }
 };
 
-exports.stochDBupdate = async (
+exports.stochSymMonthlyUpdate = async (symbol, k, d, date, type) => {
+  try {
+    if (type === "stock") {
+      const final = await symbolModel.updateOne(
+        { symbol },
+        {
+          stochMonthly: [
+            {
+              stoch_k: k,
+              stoch_d: d,
+              date,
+            },
+          ],
+        }
+      );
+    } else if (type === "crypto") {
+      const final = await CryptoModel.updateOne(
+        { symbol },
+        {
+          stochMonthly: [
+            {
+              stoch_k: k,
+              stoch_d: d,
+              date,
+            },
+          ],
+        }
+      );
+    }
+  } catch (err) {}
+};
+
+exports.stochRsiSymUpdate = async (symbol, k, d, date, pk, pd, pdate, type) => {
+  try {
+    if (type === "stock") {
+      const final = await symbolModel.updateOne(
+        { symbol },
+        {
+          stochRsi: [
+            {
+              fast_k: k,
+              fast_d: d,
+              date,
+            },
+          ],
+          biweeklyStochRsi: [
+            {
+              fast_k: pk,
+              fast_d: pd,
+              date: pdate,
+            },
+          ],
+        }
+      );
+    } else if (type === "crypto") {
+      const final = await CryptoModel.updateOne(
+        { symbol },
+        {
+          stochRsi: [
+            {
+              fast_k: k,
+              fast_d: d,
+              date,
+            },
+          ],
+          biweeklyStochRsi: [
+            {
+              fast_k: pk,
+              fast_d: pd,
+              date: pdate,
+            },
+          ],
+        }
+      );
+    }
+  } catch (err) {}
+};
+
+exports.stochRsiMonthlySymUpdate = async (symbol, k, d, date, type) => {
+  try {
+    if (type === "stock") {
+      const final = await symbolModel.updateOne(
+        { symbol },
+        {
+          stochRsiMonthly: [
+            {
+              fast_k: k,
+              fast_d: d,
+              date,
+            },
+          ],
+        }
+      );
+    } else if (type === "crypto") {
+      const final = await CryptoModel.updateOne(
+        { symbol },
+        {
+          stochRsiMonthly: [
+            {
+              fast_k: k,
+              fast_d: d,
+              date,
+            },
+          ],
+        }
+      );
+    }
+  } catch (err) {}
+};
+
+exports.macdSymUpdate = async (
   symbol,
-  slowk,
-  slowd,
+  macd,
+  signal,
   date,
-  interval,
-  pk,
-  pd,
   pdate,
+  pmacd,
+  psig,
   type
 ) => {
-  if (type === "stock") {
-    try {
-      const final = await StochModel.updateOne(
+  try {
+    if (type === "stock") {
+      const final = await symbolModel.updateOne(
         { symbol },
         {
-          slowk,
-          slowd,
-          date,
-          interval,
-          previousk: pk,
-          previousd: pd,
-          previousdate: pdate,
+          weeklyMacd: [
+            {
+              macd,
+              signal,
+              date,
+            },
+          ],
+          biweeklyMacd: [
+            {
+              macd: pmacd,
+              signal: psig,
+              date: pdate,
+            },
+          ],
         }
       );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoSochModel.updateOne(
+    } else if (type === "crypto") {
+      const final = await CryptoModel.updateOne(
         { symbol },
         {
-          slowk,
-          slowd,
-          date,
-          interval,
-          previousk: pk,
-          previousd: pd,
-          previousdate: pdate,
+          weeklyMacd: [
+            {
+              macd,
+              signal,
+              date,
+            },
+          ],
+          biweeklyMacd: [
+            {
+              macd: pmacd,
+              signal: psig,
+              date: pdate,
+            },
+          ],
         }
       );
-    } catch (err) {}
-  }
+    }
+  } catch (err) {}
 };
 
-exports.stochDBcreateMonthly = async (
-  symbol,
-  slowk,
-  slowd,
-  date,
-  interval,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await StochMonthlyModel.create({
-        symbol,
-        slowk,
-        slowd,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoStochMonthlyModel.create({
-        symbol,
-        slowk,
-        slowd,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.stochDBupdateMonthly = async (symbol, slowk, slowd, date, interval) => {
-  if (type === "stock") {
-    try {
-      const final = await StochMonthlyModel.updateOne(
+exports.macdSymUpdateMonthly = async (symbol, macd, signal, date, type) => {
+  try {
+    if (type === "stock") {
+      const final = await symbolModel.updateOne(
         { symbol },
         {
-          slowk,
-          slowd,
-          date,
-          interval,
+          monthlyMacd: [
+            {
+              macd,
+              signal,
+              date,
+            },
+          ],
         }
       );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoStochMonthlyModel.updateOne(
+    } else if (type === "crypto") {
+      const final = await CryptoModel.updateOne(
         { symbol },
         {
-          slowk,
-          slowd,
-          date,
-          interval,
+          monthlyMacd: [
+            {
+              macd,
+              signal,
+              date,
+            },
+          ],
         }
       );
-    } catch (err) {}
-  }
-};
-
-exports.stochRsiDBcreate = async (
-  symbol,
-  fastk,
-  fastd,
-  date,
-  interval,
-  pfk,
-  pfd,
-  pdate,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await StochRsiModel.create({
-        symbol,
-        fastk,
-        fastd,
-        date,
-        previousdate: pdate,
-        previousfastk: pfk,
-        previousfastd: pfd,
-        interval,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoStochRsiModel.create({
-        symbol,
-        fastk,
-        fastd,
-        date,
-        previousdate: pdate,
-        previousfastk: pfk,
-        previousfastd: pfd,
-        interval,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.stochRsiDBupdate = async (
-  symbol,
-  fastk,
-  fastd,
-  date,
-  interval,
-  pfk,
-  pfd,
-  pdate,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await StochRsiModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          fastk,
-          fastd,
-          date,
-          previousdate: pdate,
-          previousfastk: pfk,
-          previousfastd: pfd,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoStochRsiModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          fastk,
-          fastd,
-          date,
-          previousdate: pdate,
-          previousfastk: pfk,
-          previousfastd: pfd,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-};
-
-exports.stochRsiDBcreateMonthly = async (
-  symbol,
-  fastk,
-  fastd,
-  date,
-  interval,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await stochRsiMonthlyModel.create({
-        symbol,
-        fastk,
-        fastd,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoStochRsiMonthlyModel.create({
-        symbol,
-        fastk,
-        fastd,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.stochRsiDBupdateMonthly = async (
-  symbol,
-  fastk,
-  fastd,
-  date,
-  interval,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await stochRsiMonthlyModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          fastk,
-          fastd,
-          date,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoStochRsiMonthlyModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          fastk,
-          fastd,
-          date,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-};
-
-exports.macdDBcreate = async (
-  symbol,
-  macd,
-  signal,
-  date,
-  interval,
-  pd,
-  pm,
-  ps,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await MacdModel.create({
-        symbol,
-        macd,
-        signal,
-        date,
-        interval,
-        previousdate: pd,
-        previousmacd: pm,
-        previoussignal: ps,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoMacdModel.create({
-        symbol,
-        macd,
-        signal,
-        date,
-        interval,
-        previousdate: pd,
-        previousmacd: pm,
-        previoussignal: ps,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.macdDBupdate = async (
-  symbol,
-  macd,
-  signal,
-  date,
-  interval,
-  pd,
-  pm,
-  ps,
-  type
-) => {
-  if (type === "stock") {
-    const final = await MacdModel.create(
-      {
-        symbol,
-      },
-      {
-        macd,
-        signal,
-        date,
-        interval,
-        previousdate: pd,
-        previousmacd: pm,
-        previoussignal: ps,
-      }
-    );
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoMacdModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          macd,
-          signal,
-          date,
-          interval,
-          previousdate: pd,
-          previousmacd: pm,
-          previoussignal: ps,
-        }
-      );
-    } catch (err) {}
-  }
-};
-
-exports.macdDBcreateMonthly = async (
-  symbol,
-  macd,
-  signal,
-  date,
-  interval,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await MacdMonthlyModel.create({
-        symbol,
-        macd,
-        signal,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoMacdMonthlyModel.create({
-        symbol,
-        macd,
-        signal,
-        date,
-        interval,
-      });
-    } catch (err) {}
-  }
-};
-
-exports.macdDBupdateMonthly = async (
-  symbol,
-  macd,
-  signal,
-  date,
-  interval,
-  type
-) => {
-  if (type === "stock") {
-    try {
-      const final = await MacdMonthlyModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          macd,
-          signal,
-          date,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
-  if (type === "crypto") {
-    try {
-      const final = await CryptoMacdMonthlyModel.updateOne(
-        {
-          symbol,
-        },
-        {
-          macd,
-          signal,
-          date,
-          interval,
-        }
-      );
-    } catch (err) {}
-  }
+    }
+  } catch (err) {}
 };

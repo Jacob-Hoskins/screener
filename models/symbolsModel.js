@@ -1,18 +1,17 @@
 const mongoose = require("mongoose");
 
-const CrpytoSchema = new mongoose.Schema({
+const symbolSchema = new mongoose.Schema({
   symbol: {
     type: String,
     required: true,
-    unique: true,
   },
-  exchanges: {
+  name: {
     type: String,
   },
-  currencybase: {
+  exchange: {
     type: String,
   },
-  currencyquote: {
+  type: {
     type: String,
   },
 
@@ -209,6 +208,6 @@ const CrpytoSchema = new mongoose.Schema({
   ],
 });
 
-const crypto = mongoose.model("cryptos", CrpytoSchema);
+const Symbols = mongoose.model("symbols", symbolSchema);
 
-module.exports = crypto;
+module.exports = Symbols;

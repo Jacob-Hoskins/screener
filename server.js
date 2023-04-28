@@ -25,10 +25,11 @@ mongoose
 const server = app.listen(3000, () => {
   console.log("Server Running");
   setTimeout(() => {
-    while (true) {
-      startSearch.startingPointEquities();
-      startSearch.startingPointCryptos();
-      startSearch.failedSearchResults();
-    }
+    // startSearch.sleep(1500);
+    // startSearch.startingPointEquities();
+    // startSearch.sleep(1500);
+    startSearch.startingPointCryptos();
+    // startSearch.sleep(1500);
+    //startSearch.failedSearchResults();
   }, 1000);
 });

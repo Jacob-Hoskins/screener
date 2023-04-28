@@ -18,6 +18,18 @@ const symbolSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  rsiweekly: [
+    {
+      date: {
+        type: String,
+        required: true,
+      },
+      data: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 const Symbols = mongoose.model("Equites", symbolSchema);
